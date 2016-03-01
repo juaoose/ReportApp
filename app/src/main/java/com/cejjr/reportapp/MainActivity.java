@@ -2,6 +2,7 @@ package com.cejjr.reportapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -10,12 +11,27 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.io.File;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //mkdir
+
+        File folder = new File(Environment.getExternalStorageDirectory() + "/ReportApp");
+        boolean success = true;
+        if (!folder.exists()) {
+            success = folder.mkdir();
+        }
+        if (success) {
+            // Do something on success
+        } else {
+            // Do something else on failure
+        }
     }
 
     @Override
@@ -43,6 +59,11 @@ public class MainActivity extends AppCompatActivity {
     public void emergencyCall(View view)
     {
         Intent i = new Intent(this,EmergencyActivity.class);
+        startActivity(i);
+    }
+
+    public void crearReporte(View view){
+        Intent i = new Intent(this, CrearReporteActivity.class);
         startActivity(i);
     }
 }

@@ -18,4 +18,5 @@
         android:src="@android:drawable/ic_dialog_alert"
         android:onClick="emergencyCall"/>
 
+
 </android.support.design.widget.CoordinatorLayout>

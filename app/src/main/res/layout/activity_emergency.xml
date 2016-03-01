@@ -37,7 +37,6 @@
                     android:id="@+id/btnSupervisor"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/supervisor"
                     android:onClick="llamar"/>
                 <TextView
                     android:layout_width="wrap_content"
@@ -67,7 +66,6 @@
                     android:id="@+id/btnBomberos"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/fire_alarm"
                     android:onClick="llamar"/>
                 <TextView
                     android:layout_width="wrap_content"
@@ -106,7 +104,6 @@
                     android:id="@+id/btnAmbulancia"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ambulance"
                     android:onClick="llamar"/>
                 <TextView
                     android:layout_width="wrap_content"
@@ -136,7 +133,6 @@
                     android:id="@+id/btnPolicia"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/police"
                     android:onClick="llamar"/>
                 <TextView
                     android:layout_width="wrap_content"
