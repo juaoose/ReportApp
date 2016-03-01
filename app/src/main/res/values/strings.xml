@@ -5,4 +5,5 @@
     <string name="Ambulancia">Ambulancia</string>
     <string name="Supervisor">Supervisor</string>
     <string name="Policia">Policia</string>
+    <string name="RegisterEDHint">Identificador</string>
 </resources>
