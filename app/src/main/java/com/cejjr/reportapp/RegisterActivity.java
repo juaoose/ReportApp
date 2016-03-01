@@ -11,9 +11,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
+import mundo.Guardia;
+
 public class RegisterActivity extends AppCompatActivity {
 
     static final int PICK_CONTACT=1;
+
+    private String cNumber="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,24 +49,25 @@ public class RegisterActivity extends AppCompatActivity {
                         String id =c.getString(c.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
 
                         String hasPhone =c.getString(c.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
-
                         if (hasPhone.equalsIgnoreCase("1")) {
                             Cursor phones = getContentResolver().query(
                                     ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null,
                                     ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = "+ id,
                                     null, null);
                             phones.moveToFirst();
-                            String cNumber = phones.getString(phones.getColumnIndex("data1"));
-                            System.out.println("number is:"+cNumber);
+                            cNumber = phones.getString(phones.getColumnIndex("data1"));
                         }
-                        String name = c.getString(c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                        String numero = c.getString(c.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-
-                        EditText edText = (EditText) findViewById(R.id.etxtId);
-                        edText.setText(numero);
                     }
                 }
                 break;
         }
+    }
+
+    public void iniciarTurno(View v)
+    {
+        int idGuardia = Integer.parseInt(((EditText)findViewById(R.id.etxtId)).getText().toString().trim().replace(" ", ""));
+        Guardia.darGuardia().inicializar(cNumber,idGuardia);
+        Intent s = new Intent(this,MainActivity.class);
+        startActivity(s);
     }
 }

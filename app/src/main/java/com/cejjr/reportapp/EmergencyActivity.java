@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,6 +14,8 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+
+import mundo.Guardia;
 
 public class EmergencyActivity extends AppCompatActivity {
 
@@ -33,16 +36,25 @@ public class EmergencyActivity extends AppCompatActivity {
         String tel = "tel:";
         switch (view.getId()) {
             case R.id.btnSupervisor:
-                tel += "3132828108";//JJ - npi
+                String telSup = Guardia.darGuardia().darNumeroSupervisor();
+                if(telSup.equals(""))
+                {
+                    ((FloatingActionButton)findViewById(R.id.btnSupervisor)).hide();
+                }
+                else
+                {
+                    tel += telSup;//JJ - npi
+                }
+
                 break;
             case R.id.btnAmbulancia:
-                tel += "3213987247";//Arango - 125
+                tel += "125";//125
                 break;
             case R.id.btnBomberos:
-                tel += "3043272857";//Niggalleta - 119
+                tel += "119";//119
                 break;
             case R.id.btnPolicia:
-                tel += "3165397028";//Baby - 112
+                tel += "112";//112
                 break;
         }
 
@@ -89,13 +101,6 @@ public class EmergencyActivity extends AppCompatActivity {
                 if (isPhoneCalling) {
 
                     Log.i(LOG_TAG, "restart app");
-
-                    // restart app
-                    Intent i = getBaseContext().getPackageManager()
-                            .getLaunchIntentForPackage(
-                                    getBaseContext().getPackageName());
-                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(i);
 
                     isPhoneCalling = false;
                 }

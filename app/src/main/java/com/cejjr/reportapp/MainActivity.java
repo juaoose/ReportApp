@@ -10,8 +10,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import java.io.File;
+
+import mundo.Guardia;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             // Do something else on failure
         }
+        ((TextView)findViewById(R.id.textView2)).setText(Guardia.darGuardia().darNumeroSupervisor());
     }
 
     @Override

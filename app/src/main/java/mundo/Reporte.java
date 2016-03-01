@@ -3,7 +3,7 @@ package mundo;
 import java.util.ArrayList;
 
 /**
- * Created by Usuario Autorizado on 29/02/2016.
+ * Created by Juan Gomez on 29/02/2016.
  */
 public class Reporte {
 

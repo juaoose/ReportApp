@@ -5,11 +5,7 @@
     <string name="Ambulancia">Ambulancia</string>
     <string name="Supervisor">Supervisor</string>
     <string name="Policia">Policia</string>
-<<<<<<< HEAD
     <string name="title_activity_crear_reporte">CrearReporteActivity</string>
-
     <string name="hello_world">Hello world!</string>
-=======
     <string name="RegisterEDHint">Identificador</string>
->>>>>>> origin/master
 </resources>
