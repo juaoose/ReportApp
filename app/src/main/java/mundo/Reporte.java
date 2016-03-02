@@ -7,7 +7,7 @@ import java.util.ArrayList;
  */
 public class Reporte {
 
-    private String id;
+    public String id;
 
     private ArrayList<String> imagenes;
 

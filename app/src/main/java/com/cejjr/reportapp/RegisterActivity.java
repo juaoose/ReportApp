@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import mundo.Guardia;
 
@@ -64,10 +65,15 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public void iniciarTurno(View v)
-    {
+    {   if( ((EditText)findViewById(R.id.etxtId)).getText().toString().matches("")){
+            Toast.makeText(getApplicationContext(), "Ingresar su identificador", Toast.LENGTH_LONG).show();
+        }else{
+
         int idGuardia = Integer.parseInt(((EditText)findViewById(R.id.etxtId)).getText().toString().trim().replace(" ", ""));
         Guardia.darGuardia().inicializar(cNumber,idGuardia);
         Intent s = new Intent(this,MainActivity.class);
         startActivity(s);
+    }
+
     }
 }

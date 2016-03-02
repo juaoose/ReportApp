@@ -20,6 +20,7 @@ import java.util.Date;
 
 import java.text.SimpleDateFormat;
 
+import mundo.ReportApp;
 import mundo.Reporte;
 
 public class CrearReporteActivity extends AppCompatActivity {
@@ -30,7 +31,7 @@ public class CrearReporteActivity extends AppCompatActivity {
     Button audio, play, capturar, seleccionar, guardar;
 
     private MediaRecorder grabador;
-
+    private Reporte reporte;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,6 +111,8 @@ public class CrearReporteActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             if (!recordingStatus) {
+                recordingStatus = true;
+                play.setEnabled(false);
                 audio.setText("Detener");
                 grabador = new MediaRecorder();
                 grabador.setAudioSource(MediaRecorder.AudioSource.MIC);
@@ -124,10 +127,11 @@ public class CrearReporteActivity extends AppCompatActivity {
                 }
             }
             else{
+                recordingStatus = false;
                 audio.setText("Grabar");
                 grabador.stop();
                 grabador.release();
-                grabador  = null;
+                play.setEnabled(true);
             }
 
         }
@@ -139,8 +143,9 @@ public class CrearReporteActivity extends AppCompatActivity {
     View.OnClickListener listenerGuardar = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Reporte report = new Reporte(ide);
-            //TODO setstuff & save en el arreglo
+            reporte = new Reporte(ide);
+            ReportApp.darInstancia().agregarReporte(reporte);
+            onBackPressed();
         }
     };
 
@@ -203,10 +208,14 @@ public class CrearReporteActivity extends AppCompatActivity {
             try {
                 Intent intent = new Intent();
                 //intent.setType("image/*");
-                intent.setType("image/jpeg");
+                //intent.setType("image/jpeg");
+                File nuevo = new File(outputFile+"/");
+                Uri uri = Uri.fromFile(nuevo);
+
                 intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
                 intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent,"Select Picture"), 1);
+                intent.setDataAndType(uri, "image/jpeg");
+                startActivityForResult(Intent.createChooser(intent,"Seleccionar Imagenes"), 1);
 
 //                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
 //                    Uri uri = Uri.parse(Environment.getExternalStorageDirectory().getPath()
@@ -221,4 +230,23 @@ public class CrearReporteActivity extends AppCompatActivity {
     };
 
 
+    @Override
+    public void onBackPressed() {
+        if(reporte != null){
+            super.onBackPressed();
+        }else{
+            File dir = new File(outputFile);
+            if (dir.isDirectory())
+            {
+                String[] children = dir.list();
+                for (int i = 0; i < children.length; i++)
+                {
+                    new File(dir, children[i]).delete();
+                }
+            }
+            super.onBackPressed();
+        }
+
+
+    }
 }
