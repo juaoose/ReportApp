@@ -9,4 +9,5 @@
     <string name="hello_world">Hello world!</string>
     <string name="RegisterEDHint">Identificador</string>
     <string name="title_activity_ver_reportes">VerReportesActivity</string>
+    <string name="title_activity_ver_detalle_reporte">VerDetalleReporteActivity</string>
 </resources>

@@ -2,12 +2,15 @@ package com.cejjr.reportapp;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,7 +18,10 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.util.Date;
 
 import java.text.SimpleDateFormat;
@@ -24,14 +30,40 @@ import mundo.ReportApp;
 import mundo.Reporte;
 
 public class CrearReporteActivity extends AppCompatActivity {
-
+    /**
+     * String con:
+     * ide: identificador del reporte
+     * asunto: asunto del reporte
+     * outputFile: path donde esta el reporte
+     */
     private String ide, asunto, outputFile;
+
+    /**
+     * Boolean utilizado para modificar el estado de los botones de grabacion y reproduccion.
+     */
     private boolean recordingStatus = false;
 
+    /**
+     * Botones de esta vista.
+     */
     Button audio, play, capturar, seleccionar, guardar;
 
+    /**
+     * MediaRecorder
+     */
     private MediaRecorder grabador;
+
+    /**
+     * El reporte que se creara, guardara o descartara
+     */
     private Reporte reporte;
+
+    /**
+     * Metodo que se ejecuta al crear la vista.
+     * Se definen los botones, su estado inicial y el identificador del reporte.
+     * Se verifica el estado del folder donde se guardan los reportes.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,10 +114,69 @@ public class CrearReporteActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * FileUtils para obtener el Path desde un URI para las imagenes.
+     * Hay problemas con la galería defecto de mi celular.
+     * @param uri
+     * @return
+     */
+    public String getAbsolutePath(Uri uri) {
+        String[] projection = { MediaStore.MediaColumns.DATA };
+        @SuppressWarnings("deprecation")
+        Cursor cursor = managedQuery(uri, projection, null, null, null);
+        if (cursor != null) {
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } else
+            return null;
+    }
+
+    /**
+     * Metodo que permite copiar un archivo.
+     * @param src
+     * @param dst
+     * @throws IOException
+     */
+    public void copy(File src, File dst) throws IOException {
+        FileInputStream inStream = new FileInputStream(src);
+        FileOutputStream outStream = new FileOutputStream(dst);
+        FileChannel inChannel = inStream.getChannel();
+        FileChannel outChannel = outStream.getChannel();
+        inChannel.transferTo(0, inChannel.size(), outChannel);
+        inStream.close();
+        outStream.close();
+    }
+
+    /**
+     * Metodo que escucha los intents que se finalizan y poseen informacion, se ppuede verificar su request code y el codigo de estado.
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
+        //Camera
         if(requestCode == 1888){
             Toast.makeText(getApplicationContext(), "Foto guardada", Toast.LENGTH_LONG).show();
+        }
+        //Chooser
+        else if(requestCode == 1){
+
+            String selectedImagePath = getAbsolutePath(data.getData());
+
+            //copy with proper name
+            Date currentDate = new Date();
+            SimpleDateFormat fort = new SimpleDateFormat("yy_MM_dd_HH_mm_ss");
+            String dateR = fort.format(currentDate);
+            File src = new File(selectedImagePath);
+            File dest = new File(outputFile+"/img"+dateR+".jpg");
+            try {
+                copy(src, dest);
+            }catch(IOException e){
+
+            }
+
         }
     }
 
@@ -123,7 +214,7 @@ public class CrearReporteActivity extends AppCompatActivity {
                     grabador.prepare();
                     grabador.start();
                 }catch (IOException e){
-                    //TODO catch, log..
+                    
                 }
             }
             else{
@@ -189,8 +280,8 @@ public class CrearReporteActivity extends AppCompatActivity {
                 SimpleDateFormat fort = new SimpleDateFormat("yy_MM_dd_HH_mm_ss");
                 String dateR = fort.format(currentDate);
                 Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                cameraIntent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT,
-                        Uri.fromFile(new File(outputFile + "/img"+dateR+".jpg")));
+                //cameraIntent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT,
+                //        Uri.fromFile(new File(outputFile + "/img"+dateR+".jpg")));
                 startActivityForResult(cameraIntent, 1888);
 
             } catch (Exception e) {
@@ -229,7 +320,9 @@ public class CrearReporteActivity extends AppCompatActivity {
         }
     };
 
-
+    /**
+     * Metodo que se llama al presionar el boton atras de los dispositivos android.
+     */
     @Override
     public void onBackPressed() {
         if(reporte != null){

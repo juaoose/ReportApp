@@ -26,7 +26,8 @@
         <activity android:name=".EmergencyActivity" />
         <activity
             android:name=".CrearReporteActivity"
-            android:label="@string/title_activity_crear_reporte" >
+            android:label="@string/title_activity_crear_reporte"
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity android:name=".RegisterActivity" >
             <intent-filter>
@@ -37,7 +38,13 @@
         </activity>
         <activity
             android:name=".VerReportesActivity"
-            android:label="@string/title_activity_ver_reportes" >
+            android:label="@string/title_activity_ver_reportes"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
+            android:name=".VerDetalleReporteActivity"
+            android:label="@string/title_activity_ver_detalle_reporte"
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
     </application>
 

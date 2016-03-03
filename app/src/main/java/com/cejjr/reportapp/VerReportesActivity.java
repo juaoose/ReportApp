@@ -33,10 +33,10 @@ public class VerReportesActivity extends AppCompatActivity {
                 String ident = ((TextView) view).getText().toString();
 
                 // Launching new Activity on selecting single List Item
-                //Intent i = new Intent(getApplicationContext(), InfoIngredienteActivity.class);
+                Intent i = new Intent(getApplicationContext(), VerDetalleReporteActivity.class);
                 // sending data to new activity
-                //i.putExtra("reporte", id);
-                //startActivity(i);
+                i.putExtra("reporte", ident);
+                startActivity(i);
             }
 
         });
