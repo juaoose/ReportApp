@@ -8,8 +8,8 @@
         android:topRightRadius="100dp" />
     <gradient
         android:angle="180"
-        android:endColor="#d7d2cc"
-        android:startColor="#304352"
+        android:endColor="#2980b9"
+        android:startColor="#2c3e50"
         android:type="linear" />
     <stroke
         android:width="3dp"

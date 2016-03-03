@@ -3,6 +3,7 @@ package com.cejjr.reportapp;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.provider.ContactsContract;
@@ -20,13 +21,16 @@ public class RegisterActivity extends AppCompatActivity {
 
     private String cNumber="";
 
+    static final SQLiteDatabase myDataBase = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
         EditText etxt = (EditText) findViewById(R.id.etxtId);
-        etxt.getBackground().mutate().setColorFilter(getResources().getColor(R.color.colorAccent), PorterDuff.Mode.SRC_ATOP);
+        etxt.getBackground().mutate().setColorFilter(getResources().getColor(R.color.WHITE), PorterDuff.Mode.SRC_ATOP);
+
     }
 
     public void selectSupervisor(View view)
