@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/main_header_selector">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="1">
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:src="@android:drawable/ic_dialog_alert"/>
+
+        <TextView
+            android:id="@+id/text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FFF"
+            android:text="Actualmente no cuenta con conexión a un fuente de datos, se almacenara la nota de voz y la evidencia fotografica en el celular, mientras se conecta a una fuente de red."
+            android:layout_toRightOf="@+id/image"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="1">
+            <Button
+                android:id="@+id/dialogButtonOK"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text=" Ok "
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_below="@+id/image"
+                android:layout_weight="0.5"/>
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No mostrar de nuevo."
+                android:id="@+id/checkBox"
+                android:textColor="@color/WHITE"
+                android:layout_below="@+id/image"
+                android:layout_weight="0.5"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

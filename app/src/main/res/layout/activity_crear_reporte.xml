@@ -4,48 +4,83 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
+    android:background="@drawable/main_header_selector"
     tools:context="com.cejjr.reportapp.CrearReporteActivity">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="1"
+        android:gravity="center">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0.33"
+            android:orientation="horizontal"
+            android:gravity="bottom">
+            <Button
+                android:layout_width="@dimen/button_width"
+                android:layout_height="@dimen/button_height"
+                android:text="Grabar"
+                android:background="@drawable/button_center"
+                android:id="@+id/btnRecord"
+                android:textColor="@color/WHITE"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Grabar"
-        android:id="@+id/btnRecord"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="@dimen/button_width"
+                android:layout_height="@dimen/button_height"
+                android:text="Escuchar"
+                android:textColor="@color/WHITE"
+                android:background="@drawable/button_center"
+                android:id="@+id/btnListen"
+                android:layout_alignParentTop="true"
+                android:layout_toEndOf="@+id/btnRecord" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0.33"
+            android:orientation="horizontal"
+            android:gravity="center">
+            <Button
+                android:layout_width="@dimen/button_width"
+                android:layout_height="@dimen/button_height"
+                android:text="Capturar"
+                android:background="@drawable/button_center"
+                android:id="@+id/btnCapturar"
+                android:textColor="@color/WHITE"
+                android:layout_below="@+id/btnRecord"
+                android:layout_alignParentStart="true"
+                android:layout_toStartOf="@+id/btnListen" />
 
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Escuchar"
-        android:id="@+id/btnListen"
-        android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/btnRecord" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Capturar"
-        android:id="@+id/btnCapturar"
-        android:layout_below="@+id/btnRecord"
-        android:layout_alignParentStart="true"
-        android:layout_toStartOf="@+id/btnListen" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Seleccionar"
-        android:id="@+id/btnSelect"
-        android:layout_below="@+id/btnRecord"
-        android:layout_toEndOf="@+id/btnRecord" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="guardar"
-        android:id="@+id/btnSave"
-        android:layout_below="@+id/btnCapturar"
-        android:layout_toStartOf="@+id/btnSelect" />
-
+            <Button
+                android:layout_width="@dimen/button_width"
+                android:layout_height="@dimen/button_height"
+                android:text="Seleccionar"
+                android:background="@drawable/button_center"
+                android:textColor="@color/WHITE"
+                android:id="@+id/btnSelect"
+                android:layout_below="@+id/btnRecord"
+                android:layout_toEndOf="@+id/btnRecord" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0.33"
+            android:orientation="horizontal"
+            android:gravity="top">
+            <Button
+                android:layout_width="@dimen/button_width"
+                android:layout_height="@dimen/button_height"
+                android:text="guardar"
+                android:background="@drawable/button_center"
+                android:textColor="@color/WHITE"
+                android:id="@+id/btnSave"
+                android:layout_below="@+id/btnCapturar"
+                android:layout_toStartOf="@+id/btnSelect" />
+        </LinearLayout>
+    </LinearLayout>
 </RelativeLayout>

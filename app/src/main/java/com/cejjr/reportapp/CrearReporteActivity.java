@@ -1,5 +1,6 @@
 package com.cejjr.reportapp;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -14,7 +15,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -26,6 +31,7 @@ import java.util.Date;
 
 import java.text.SimpleDateFormat;
 
+import mundo.Guardia;
 import mundo.ReportApp;
 import mundo.Reporte;
 
@@ -104,7 +110,30 @@ public class CrearReporteActivity extends AppCompatActivity {
         capturar.setOnClickListener(listenerCapturar);
         seleccionar.setOnClickListener(listenerSeleccion);
         guardar.setOnClickListener(listenerGuardar);
+        if(Guardia.darGuardia().mostrarRecomendacion())
+        {
+            final Dialog dialog = new Dialog(CrearReporteActivity.this);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setContentView(R.layout.custom_dialog);
 
+            // set the custom dialog components - text, image and button
+            CheckBox ckb = (CheckBox) dialog.findViewById(R.id.checkBox);
+            final boolean showAgain = ckb.isChecked();
+
+            Button dialogButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
+            // if button is clicked, close the custom dialog
+            dialogButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v)
+                {
+                    Guardia.darGuardia().recordarMensaje(!showAgain);
+                    dialog.dismiss();
+
+                }
+            });
+
+            dialog.show();
+        }
     }
 
     @Override

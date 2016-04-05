@@ -10,4 +10,8 @@
     <string name="RegisterEDHint">Identificador</string>
     <string name="title_activity_ver_reportes">VerReportesActivity</string>
     <string name="title_activity_ver_detalle_reporte">VerDetalleReporteActivity</string>
+    <string name="speech_prompt">Escuchando</string>
+    <string name="speech_not_supported">Lo sentimos, su dispositivo no soporta esta caracteristica</string>
+    <string name="tap_on_mic">Haga click para grabar</string>
+
 </resources>

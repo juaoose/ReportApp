@@ -6,5 +6,8 @@
     <color name="BLACK">#000000</color>
     <color name="RED">#FF3333</color>
     <color name="WHITE">#FFF</color>
-
+    <color name="bg_gradient_start">#31244e</color>
+    <color name="bg_gradient_end">#6b394c</color>
+    <color name="bg_gradient_inicio">#d7d2cc</color>
+    <color name="bg_gradient_fin">#304352</color>
 </resources>
