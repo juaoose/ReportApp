@@ -12,6 +12,9 @@ public class Guardia {
     private int idGuardia;
     private boolean mostrarRecomendacion;
 
+    public int getIdGuardia() {
+        return idGuardia;
+    }
 
     public static Guardia darGuardia() {
         if (instancia == null) {

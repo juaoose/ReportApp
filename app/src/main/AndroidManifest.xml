@@ -56,7 +56,9 @@
             android:name=".VerDetalleReporteActivity"
             android:label="VerDetalleReporteActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".RegistrarImplementosActivity">
+        <activity
+            android:name=".RegistrarImplementosActivity"
+            android:configChanges="keyboardHidden|orientation">
 
         </activity>
     </application>

@@ -9,25 +9,68 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:background="@drawable/main_header_selector"
     tools:context="com.cejjr.reportapp.RegistrarImplementosActivity">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/scrollView"
+            android:layout_gravity="center_horizontal" >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:weightSum="1">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Linterna:"
+                    android:id="@+id/txtTitleLinterna"
+                    android:textColor="@color/WHITE"
+                    android:textSize="35dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:id="@+id/txtLinterna"
+                    android:textColor="@color/WHITE"
+                    android:textSize="20dp"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Radio:"
+                    android:textColor="@color/WHITE"
+                    android:id="@+id/txtTitleRadio"
+                    android:textSize="35dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textColor="@color/WHITE"
+                    android:id="@+id/txtRadio"
+                    android:textSize="20dp"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Acompañante:"
+                    android:textColor="@color/WHITE"
+                    android:id="@+id/txtTitleAcompañante"
+                    android:textSize="35dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/WHITE"
+                    android:text=""
+                    android:id="@+id/txtAcompañante"
+                    android:textSize="20dp"/>
+                <Button android:id="@+id/scan_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Scan"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/button_center"
+                    android:layout_gravity="center"/>
+            </LinearLayout>
+        </ScrollView>
 
-    <Button android:id="@+id/scan_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:text="Scan" />
-    <TextView
-        android:id="@+id/scan_format"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textIsSelectable="true"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/scan_button" />
-    <TextView
-        android:id="@+id/scan_content"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textIsSelectable="true"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/scan_format" />
 
 </RelativeLayout>
