@@ -85,7 +85,10 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
+    public void agregarComentario(View view) {
+        Intent i = new Intent(this, AgregarComentarioActivity.class);
+        startActivity(i);
+    }
     public void emergencyCall(View view) {
         Intent i = new Intent(this, EmergencyActivity.class);
         startActivity(i);

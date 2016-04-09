@@ -4,31 +4,29 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.speech.RecognizerIntent;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
-import android.widget.ImageButton;
-import android.widget.TextView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class CrearReporteOnlineActivity extends Activity {
+public class AgregarComentarioActivity extends Activity {
 
-    private TextView txtSpeechInput;
-    private ImageButton btnSpeak;
+    private EditText edtxtInputText;
+    private Button btnSpeak;
     private final int REQ_CODE_SPEECH_INPUT = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_crear_reporte_online);
-
-        txtSpeechInput = (TextView) findViewById(R.id.txtSpeechInput);
-        btnSpeak = (ImageButton) findViewById(R.id.btnSpeak);
-
+        setContentView(R.layout.activity_agregar_comentario);
+        edtxtInputText = (EditText) findViewById(R.id.editText);
+        btnSpeak = (Button) findViewById(R.id.btnSpeakComen);
         btnSpeak.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -36,9 +34,7 @@ public class CrearReporteOnlineActivity extends Activity {
                 promptSpeechInput();
             }
         });
-
     }
-
     /**
      * Showing google speech input dialog
      * */
@@ -71,7 +67,7 @@ public class CrearReporteOnlineActivity extends Activity {
 
                     ArrayList<String> result = data
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                    txtSpeechInput.setText(result.get(0));
+                    edtxtInputText.setText(result.get(0));
                 }
                 break;
             }
