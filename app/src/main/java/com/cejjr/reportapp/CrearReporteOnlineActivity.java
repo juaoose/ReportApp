@@ -3,22 +3,31 @@ package com.cejjr.reportapp;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Environment;
 import android.speech.RecognizerIntent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Locale;
 
 public class CrearReporteOnlineActivity extends Activity {
 
     private TextView txtSpeechInput;
     private ImageButton btnSpeak;
+    private ImageButton capturar, seleccionar;
+    private String outputFile,ide;
     private final int REQ_CODE_SPEECH_INPUT = 100;
 
     @Override
@@ -28,7 +37,10 @@ public class CrearReporteOnlineActivity extends Activity {
 
         txtSpeechInput = (TextView) findViewById(R.id.txtSpeechInput);
         btnSpeak = (ImageButton) findViewById(R.id.btnSpeak);
-
+        capturar = (ImageButton) findViewById(R.id.btnCapture);
+        capturar.setOnClickListener(listenerCapturar);
+        seleccionar = (ImageButton) findViewById(R.id.btnGallery);
+        seleccionar.setOnClickListener(listenerSeleccion);
         btnSpeak.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -36,6 +48,21 @@ public class CrearReporteOnlineActivity extends Activity {
                 promptSpeechInput();
             }
         });
+        //Crear reporte
+        Date currentDate = new Date();
+        SimpleDateFormat format = new SimpleDateFormat("yy_MM_dd_HH_mm_ss");
+        ide = format.format(currentDate);
+        outputFile = Environment.getExternalStorageDirectory()+"/ReportApp/"+ide;
+        boolean success = true;
+        File folder = new File(Environment.getExternalStorageDirectory() + "/ReportApp/"+ide);
+        if (!folder.exists()) {
+            success = folder.mkdir();
+        }
+        if (success) {
+            // Do something on success
+        } else {
+            // Do something else on failure
+        }
 
     }
 
@@ -71,6 +98,7 @@ public class CrearReporteOnlineActivity extends Activity {
 
                     ArrayList<String> result = data
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    txtSpeechInput.setTextSize(20);
                     txtSpeechInput.setText(result.get(0));
                 }
                 break;
@@ -84,4 +112,55 @@ public class CrearReporteOnlineActivity extends Activity {
         // Inflate the menu; this adds items to the action bar if it is present.
         return true;
     }
+
+    /**
+     * Listener para tomar una foto.
+     */
+    View.OnClickListener listenerCapturar = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            try {
+                Date currentDate = new Date();
+                SimpleDateFormat fort = new SimpleDateFormat("yy_MM_dd_HH_mm_ss");
+                String dateR = fort.format(currentDate);
+                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                //cameraIntent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT,
+                //        Uri.fromFile(new File(outputFile + "/img"+dateR+".jpg")));
+                startActivityForResult(cameraIntent, 1888);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
+    /**
+     * Listener para seleccionar imagenes
+     */
+    View.OnClickListener listenerSeleccion = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            try {
+                Intent intent = new Intent();
+                //intent.setType("image/*");
+                //intent.setType("image/jpeg");
+                File nuevo = new File(outputFile+"/");
+                Uri uri = Uri.fromFile(nuevo);
+
+                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                intent.setDataAndType(uri, "image/jpeg");
+                startActivityForResult(Intent.createChooser(intent,"Seleccionar Imagenes"), 1);
+
+//                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//                    Uri uri = Uri.parse(Environment.getExternalStorageDirectory().getPath()
+//                            + "/myFolder/");
+//                    intent.setDataAndType(uri, "text/csv");
+//                    startActivity(Intent.createChooser(intent, "Open folder"));
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
 }

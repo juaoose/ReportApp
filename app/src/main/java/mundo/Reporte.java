@@ -7,6 +7,10 @@ import java.util.ArrayList;
  */
 public class Reporte {
 
+    //--------------------------------
+    // Atributos
+    //--------------------------------
+
     public String id;
 
     private ArrayList<String> imagenes;
@@ -14,6 +18,10 @@ public class Reporte {
     private String grabacion;
 
     private String asuunto;
+
+    //--------------------------------
+    // Metodos
+    //--------------------------------
 
     public Reporte(String identificador){
         this.id = identificador;
