@@ -37,9 +37,8 @@ public class CrearReporteOnlineActivity extends Activity {
     private TextView txtSpeechInput;
     private ImageButton btnSpeak;
     private ImageButton capturar, seleccionar, guardar;
-    private String outputFile,ide;
+    private String outputFile,ide, recognizedText;
     private final int REQ_CODE_SPEECH_INPUT = 100;
-    private static String BASE_URL = "http://157.253.209.197:3000/reportes";
     private Reporte reporte;
 
     @Override
@@ -136,6 +135,7 @@ public class CrearReporteOnlineActivity extends Activity {
                         .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                 txtSpeechInput.setTextSize(20);
                 txtSpeechInput.setText(result.get(0));
+                recognizedText = result.get(0);
             }
         }
 
@@ -154,6 +154,7 @@ public class CrearReporteOnlineActivity extends Activity {
         @Override
         public void onClick(View v) {
             reporte = new Reporte(ide);
+            reporte.setAsunto(recognizedText);
             ReportApp.darInstancia().agregarReporte(reporte);
             //Util para imagenes
             ArrayList<String> paths = new ArrayList<String>();
@@ -171,12 +172,12 @@ public class CrearReporteOnlineActivity extends Activity {
             }
             //Comunicacion servidor rest.
             try {
-                File picture = new File(paths.get(0));
                 RestClient test = new RestClient();
-                //test.get(BASE_URL);
-                //test.post(BASE_URL,reporte, picture);
-                //test.image(BASE_URL, picture);
-                test.upload("http://157.253.209.197:3000/upload", reporte, picture);
+                test.post(reporte);
+                for(int i = 0; i <paths.size() ;i++) {
+                    File picture = new File(paths.get(i));
+                    test.upload(reporte, picture);
+                }
 
             }
             catch (Exception e)
