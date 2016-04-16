@@ -39,7 +39,7 @@ public class CrearReporteOnlineActivity extends Activity {
     private ImageButton capturar, seleccionar, guardar;
     private String outputFile,ide;
     private final int REQ_CODE_SPEECH_INPUT = 100;
-    private static String BASE_URL = "http://157.253.207.245:3000/reportes";
+    private static String BASE_URL = "http://157.253.209.197:3000/reportes";
     private Reporte reporte;
 
     @Override
@@ -176,7 +176,7 @@ public class CrearReporteOnlineActivity extends Activity {
                 //test.get(BASE_URL);
                 //test.post(BASE_URL,reporte, picture);
                 //test.image(BASE_URL, picture);
-                test.upload("http://157.253.207.245:3000/upload", reporte, picture);
+                test.upload("http://157.253.209.197:3000/upload", reporte, picture);
 
             }
             catch (Exception e)
