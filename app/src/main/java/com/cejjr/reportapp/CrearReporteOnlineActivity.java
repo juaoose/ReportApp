@@ -3,8 +3,10 @@ package com.cejjr.reportapp;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.speech.RecognizerIntent;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,18 +19,28 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+import mundo.ReportApp;
+import mundo.Reporte;
+import mundo.RestClient;
+
 public class CrearReporteOnlineActivity extends Activity {
 
     private TextView txtSpeechInput;
     private ImageButton btnSpeak;
-    private ImageButton capturar, seleccionar;
+    private ImageButton capturar, seleccionar, guardar;
     private String outputFile,ide;
     private final int REQ_CODE_SPEECH_INPUT = 100;
+    private static String BASE_URL = "http://157.253.207.245:3000/reportes";
+    private Reporte reporte;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +53,8 @@ public class CrearReporteOnlineActivity extends Activity {
         capturar.setOnClickListener(listenerCapturar);
         seleccionar = (ImageButton) findViewById(R.id.btnGallery);
         seleccionar.setOnClickListener(listenerSeleccion);
+        guardar = (ImageButton) findViewById(R.id.btnSaved);
+        guardar.setOnClickListener(listenerGuardar);
         btnSpeak.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -92,19 +106,39 @@ public class CrearReporteOnlineActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        switch (requestCode) {
-            case REQ_CODE_SPEECH_INPUT: {
-                if (resultCode == RESULT_OK && null != data) {
+        //Camera
+        if(requestCode == 1888){
+            Toast.makeText(getApplicationContext(), "Foto guardada", Toast.LENGTH_LONG).show();
+        }
+        //Chooser
+        else if(requestCode == 1){
 
-                    ArrayList<String> result = data
-                            .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                    txtSpeechInput.setTextSize(20);
-                    txtSpeechInput.setText(result.get(0));
-                }
-                break;
+            String selectedImagePath = getAbsolutePath(data.getData());
+
+            //copy with proper name
+            Date currentDate = new Date();
+            SimpleDateFormat fort = new SimpleDateFormat("yy_MM_dd_HH_mm_ss");
+            String dateR = fort.format(currentDate);
+            File src = new File(selectedImagePath);
+            File dest = new File(outputFile+"/img"+dateR+".jpg");
+            try {
+                copy(src, dest);
+            }catch(IOException e){
+
             }
 
         }
+        //sPEECH INPUT
+        else if(requestCode == REQ_CODE_SPEECH_INPUT){
+            if (resultCode == RESULT_OK && null != data) {
+
+                ArrayList<String> result = data
+                        .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                txtSpeechInput.setTextSize(20);
+                txtSpeechInput.setText(result.get(0));
+            }
+        }
+
     }
 
     @Override
@@ -112,6 +146,46 @@ public class CrearReporteOnlineActivity extends Activity {
         // Inflate the menu; this adds items to the action bar if it is present.
         return true;
     }
+
+    /**
+     * Listener para guardar el reporte en el mundo
+     */
+    View.OnClickListener listenerGuardar = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            reporte = new Reporte(ide);
+            ReportApp.darInstancia().agregarReporte(reporte);
+            //Util para imagenes
+            ArrayList<String> paths = new ArrayList<String>();
+            File file=new File(outputFile);
+            File[] lista = file.listFiles();
+            int count = 0;
+            for (File f: lista){
+                String location = f.getPath();
+                String name = f.getName();
+                if (name.endsWith(".jpg") ) {
+                    count++;
+                    paths.add(location);
+                }
+
+            }
+            //Comunicacion servidor rest.
+            try {
+                File picture = new File(paths.get(0));
+                RestClient test = new RestClient();
+                //test.get(BASE_URL);
+                //test.post(BASE_URL,reporte, picture);
+                //test.image(BASE_URL, picture);
+                test.upload("http://157.253.207.245:3000/upload", reporte, picture);
+
+            }
+            catch (Exception e)
+            {
+
+            }
+            onBackPressed();
+        }
+    };
 
     /**
      * Listener para tomar una foto.
@@ -163,4 +237,61 @@ public class CrearReporteOnlineActivity extends Activity {
             }
         }
     };
+
+    /**
+     * Metodo que se llama al presionar el boton atras de los dispositivos android.
+     */
+    @Override
+    public void onBackPressed() {
+        if(reporte != null){
+            super.onBackPressed();
+        }else{
+            File dir = new File(outputFile);
+            if (dir.isDirectory())
+            {
+                String[] children = dir.list();
+                for (int i = 0; i < children.length; i++)
+                {
+                    new File(dir, children[i]).delete();
+                }
+            }
+            super.onBackPressed();
+        }
+
+
+    }
+
+    /**
+     * FileUtils para obtener el Path desde un URI para las imagenes.
+     * Hay problemas con la galería defecto de mi celular.
+     * @param uri
+     * @return
+     */
+    public String getAbsolutePath(Uri uri) {
+        String[] projection = { MediaStore.MediaColumns.DATA };
+        @SuppressWarnings("deprecation")
+        Cursor cursor = managedQuery(uri, projection, null, null, null);
+        if (cursor != null) {
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } else
+            return null;
+    }
+
+    /**
+     * Metodo que permite copiar un archivo.
+     * @param src
+     * @param dst
+     * @throws IOException
+     */
+    public void copy(File src, File dst) throws IOException {
+        FileInputStream inStream = new FileInputStream(src);
+        FileOutputStream outStream = new FileOutputStream(dst);
+        FileChannel inChannel = inStream.getChannel();
+        FileChannel outChannel = outStream.getChannel();
+        inChannel.transferTo(0, inChannel.size(), outChannel);
+        inStream.close();
+        outStream.close();
+    }
 }
