@@ -173,7 +173,8 @@ public class CrearReporteOnlineActivity extends Activity {
             //Comunicacion servidor rest.
             try {
                 RestClient test = new RestClient();
-                test.post(reporte);
+                //Guardo reporte e imagenes.
+                test.post(reporte, paths.size());
                 for(int i = 0; i <paths.size() ;i++) {
                     File picture = new File(paths.get(i));
                     test.upload(reporte, picture);
@@ -182,7 +183,7 @@ public class CrearReporteOnlineActivity extends Activity {
             }
             catch (Exception e)
             {
-
+                e.printStackTrace();
             }
             onBackPressed();
         }

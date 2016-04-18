@@ -16,9 +16,12 @@ import android.os.Environment;
 import android.provider.CalendarContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.Calendar;
@@ -26,6 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
 
+import mundo.RestClient;
 import mundo.Util;
 
 public class MainActivity extends AppCompatActivity {
@@ -202,7 +206,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void verReportes(View view) {
-        Intent i = new Intent(this, VerReportesActivity.class);
-        startActivity(i);
+        Util ins = Util.darInstancia();
+        if(ins.tieneWiFi(getApplicationContext())||ins.tieneRed(getApplicationContext()))
+        {
+            Intent i = new Intent(this, VerReportesOnlineActivity.class);
+            startActivity(i);
+        }
+        else
+        {
+            Intent i = new Intent(this, VerReportesActivity.class);
+            startActivity(i);
+        }
     }
 }

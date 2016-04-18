@@ -24,12 +24,13 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Seleccione el nombre del guardia."
+                android:text="Seleccione documento de identidad del guardia."
                 android:textSize="21dp"
                 android:textColor="@color/WHITE"/>
             <Spinner
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:id="@+id/spinner">
 
             </Spinner>
 
@@ -68,6 +69,7 @@
                 android:layout_height="@dimen/button_height"
                 android:background="@drawable/button_center"
                 android:text="Guardar Comentario"
+                android:id="@+id/buttonSave"
                 android:textColor="@color/WHITE"/>
         </LinearLayout>
     </LinearLayout>

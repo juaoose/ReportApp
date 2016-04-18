@@ -59,6 +59,8 @@
         <activity android:name=".AgregarComentarioActivity">
             android:theme="@style/AppTheme.NoActionBar"
         </activity>
+        <activity android:name=".VerReportesOnlineActivity" />
+        <activity android:name=".VerDetallesOnline"></activity>
     </application>
 
 </manifest>

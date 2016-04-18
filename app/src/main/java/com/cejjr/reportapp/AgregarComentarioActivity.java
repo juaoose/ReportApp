@@ -3,23 +3,49 @@ package com.cejjr.reportapp;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
 import android.speech.RecognizerIntent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class AgregarComentarioActivity extends Activity {
+import mundo.Guardia;
+import mundo.RestClient;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Response;
 
+public class AgregarComentarioActivity extends Activity {
+    String BASE_URL = "http://ujkka6078b18.juanjorogo.koding.io:3000";
     private EditText edtxtInputText;
-    private Button btnSpeak;
+    private Button btnSpeak, btnSubmit;
     private final int REQ_CODE_SPEECH_INPUT = 100;
+    private Spinner spinnerCedulas;
+    Handler mHandler;
+
+
+    private void updateSpinner(ArrayList<String> arc){
+        spinnerCedulas = (Spinner) findViewById(R.id.spinner);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.lista_item, R.id.label, arc);
+        spinnerCedulas.setAdapter(adapter);
+        spinnerCedulas.setSelection(0);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +58,66 @@ public class AgregarComentarioActivity extends Activity {
             @Override
             public void onClick(View v) {
                 promptSpeechInput();
+            }
+        });
+
+        btnSubmit = (Button) findViewById(R.id.buttonSave);
+        btnSubmit.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                try {
+                    String guard = String.valueOf(Guardia.darGuardia().getIdGuardia());
+                    RestClient test = new RestClient();
+                    test.submitComment(guard, spinnerCedulas.getSelectedItem().toString(), edtxtInputText.getText().toString());
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+
+                onBackPressed();
+            }
+        });
+
+
+
+        //Download cedulas
+        mHandler = new Handler(Looper.getMainLooper());
+        OkHttpClient client = new OkHttpClient();
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(BASE_URL+"/guardiasList")
+                .build();
+        client.newCall(request).enqueue(new Callback(){
+
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                try {
+                    JSONArray guardias = new JSONArray(response.body().string());
+                    final ArrayList<String> guardiasTexto = new ArrayList<String>();
+
+                    for (int i = 0; i < guardias.length(); i++) {
+                        JSONObject js = guardias.getJSONObject(i);
+                        String id = js.getString("cedula");
+                        guardiasTexto.add(id);
+                    }
+                    mHandler.post(new Runnable(){
+                        @Override
+                        public void run(){
+                            updateSpinner(guardiasTexto);
+                        }
+                    });
+
+
+                }
+                catch(Exception e){
+                    e.printStackTrace();
+                }
             }
         });
     }
