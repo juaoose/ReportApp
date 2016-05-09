@@ -41,7 +41,6 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -53,11 +52,11 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".RegistrarImplementosActivity"
-            android:configChanges="keyboardHidden|orientation">
-            android:theme="@style/AppTheme.NoActionBar"
+            android:configChanges="keyboardHidden|orientation"
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        <activity android:name=".AgregarComentarioActivity">
-            android:theme="@style/AppTheme.NoActionBar"
+        <activity android:name=".AgregarComentarioActivity"
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity android:name=".VerReportesOnlineActivity" />
         <activity android:name=".VerDetallesOnline"></activity>
