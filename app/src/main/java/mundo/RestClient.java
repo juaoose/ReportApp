@@ -43,7 +43,7 @@ import okio.Okio;
  */
 public class RestClient {
 
-    private static String BASE_URL = "http://ujkka6078b18.juanjorogo.koding.io:3000";
+    public static String BASE_URL = "http://192.168.0.15:3000";
     private JSONArray reportesResume;
 
     OkHttpClient client = new OkHttpClient();

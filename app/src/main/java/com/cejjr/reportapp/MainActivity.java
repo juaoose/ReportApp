@@ -4,8 +4,12 @@ import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -21,16 +25,35 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.estimote.sdk.Beacon;
+import com.estimote.sdk.BeaconManager;
+import com.estimote.sdk.EstimoteSDK;
+import com.estimote.sdk.Region;
+import com.estimote.sdk.repackaged.gson_v2_3_1.com.google.gson.Gson;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.UUID;
 
+import mundo.Guardia;
 import mundo.RestClient;
 import mundo.Util;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
     // Projection array. Creating indices for this array instead of doing
@@ -47,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int PROJECTION_ID_INDEX = 0;
     Map<String, String> map = new HashMap<String, String>();
     String[] eventos = {};
+    private BeaconManager beaconManager;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +90,87 @@ public class MainActivity extends AppCompatActivity {
         } else {
             // Do something else on failure
         }
+        EstimoteSDK.initialize(getApplicationContext(), "reportapp-05b", "8ad69240eb47fbf0807fee6c62a1a20d");
+        beaconManager = new com.estimote.sdk.BeaconManager(getApplicationContext());
+        beaconManager.connect(new com.estimote.sdk.BeaconManager.ServiceReadyCallback() {
+            @Override
+            public void onServiceReady() {
+                beaconManager.startMonitoring(new Region(
+                        "raged region",
+                        UUID.fromString("B9407F30-F5F8-466E-AFF9-25556B57FE6D"),
+                        null, null));
+            }
+        });
+        beaconManager.setMonitoringListener(new com.estimote.sdk.BeaconManager.MonitoringListener() {
+            @Override
+            public void onEnteredRegion(Region region, List<Beacon> list) {
+                Beacon j = list.get(0);
+                String macAddress = j.getMacAddress() + "";
+                verificarOcurrencia(macAddress, Guardia.darGuardia().getIdGuardia());
+
+            }
+
+            @Override
+            public void onExitedRegion(Region region) {
+                // could add an "exit" notification too if you want (-:
+            }
+        });
+    }
+
+    private void verificarOcurrencia(final String macAddress, final int idGuardia)
+    {
+        OkHttpClient client = new OkHttpClient();
+        final Gson gson = new Gson();
+        Request request = new Request.Builder()
+                .url(RestClient.BASE_URL+"/segGuar/123-123")
+                .build();
+
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override public void onResponse(Call call, Response response) throws IOException
+            {
+                try {
+                    long currentMillis = System.currentTimeMillis();
+                    String entriess = response.body().string()
+                            .replace("[","")
+                            .replace("]","");
+                    String[] entries = entriess.split("\\},\\{");
+
+
+                    String ocurrence = entries[entries.length-1];
+                    String pasoIntermedio = ocurrence.substring(0,ocurrence.lastIndexOf("v")-4);
+                    long ultimaOcurrencia = Long.parseLong(pasoIntermedio.substring(pasoIntermedio.lastIndexOf("a")+3,pasoIntermedio.length()));
+                    if((currentMillis-ultimaOcurrencia)>600000)
+                    {
+                        showNotification("Reportapp", "Hay una ubicación visitada, que falta por autorizar.", macAddress);
+                    }
+                    else
+                    {
+                        actualizarUltimaOcurrencia(macAddress, idGuardia, ultimaOcurrencia);
+                    }
+                }
+                catch (Exception e)
+                {
+
+                }
+            }
+        });
+    }
+
+    private void actualizarUltimaOcurrencia(String macAddress, int idGuardia, long ultimaOcurrencia) {
+
+    }
+
+    private static class Gist {
+        Map<String, GistFile> files;
+    }
+
+    private static class GistFile {
+        String content;
     }
 
     @Override
@@ -89,32 +194,29 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
     public void agregarComentario(View view) {
         Intent i = new Intent(this, AgregarComentarioActivity.class);
         startActivity(i);
     }
+
     public void emergencyCall(View view) {
         Intent i = new Intent(this, EmergencyActivity.class);
         startActivity(i);
     }
 
-    public void crearReporte(View view)
-    {
+    public void crearReporte(View view) {
         Util ins = Util.darInstancia();
-        if(ins.tieneWiFi(getApplicationContext())||ins.tieneRed(getApplicationContext()))
-        {
+        if (ins.tieneWiFi(getApplicationContext()) || ins.tieneRed(getApplicationContext())) {
             Intent i = new Intent(this, CrearReporteOnlineActivity.class);
             startActivity(i);
-        }
-        else
-        {
+        } else {
             Intent i = new Intent(this, CrearReporteActivity.class);
             startActivity(i);
         }
     }
 
-    public void registrarImplementos(View view)
-    {
+    public void registrarImplementos(View view) {
         Intent i = new Intent(this, RegistrarImplementosActivity.class);
         startActivity(i);
     }
@@ -207,15 +309,31 @@ public class MainActivity extends AppCompatActivity {
 
     public void verReportes(View view) {
         Util ins = Util.darInstancia();
-        if(ins.tieneWiFi(getApplicationContext())||ins.tieneRed(getApplicationContext()))
-        {
+        if (ins.tieneWiFi(getApplicationContext()) || ins.tieneRed(getApplicationContext())) {
             Intent i = new Intent(this, VerReportesOnlineActivity.class);
             startActivity(i);
-        }
-        else
-        {
+        } else {
             Intent i = new Intent(this, VerReportesActivity.class);
             startActivity(i);
         }
+    }
+
+    public void showNotification(String title, String message, String macAddress) {
+        Intent notifyIntent = new Intent(this, AutorizarBeaconActivity.class);
+        notifyIntent.putExtra("macAddress", macAddress);
+        notifyIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivities(this, 0,
+                new Intent[] { notifyIntent }, PendingIntent.FLAG_UPDATE_CURRENT);
+        Notification notification = new Notification.Builder(this)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(title)
+                .setContentText(message)
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent)
+                .build();
+        notification.defaults |= Notification.DEFAULT_SOUND;
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(1, notification);
     }
 }
