@@ -20,8 +20,22 @@ import com.samsung.android.sdk.SsdkUnsupportedException;
 import com.samsung.android.sdk.pass.Spass;
 import com.samsung.android.sdk.pass.SpassFingerprint;
 
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import mundo.Guardia;
+import mundo.RestClient;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Headers;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class AutorizarBeaconActivity extends AppCompatActivity implements Handler.Callback{
 
@@ -36,12 +50,13 @@ public class AutorizarBeaconActivity extends AppCompatActivity implements Handle
     private Context mContext;
     private boolean hasRegisteredFinger = false;
     private Handler mHandler;
+    private String macAddress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_autorizar_beacon);
-        String macAddress = getIntent().getStringExtra("macAddress");
+        macAddress = getIntent().getStringExtra("macAddress");
         ((TextView)findViewById(R.id.txview)).setText(macAddress);
         mContext = this;
         mSpass = new Spass();
@@ -145,10 +160,8 @@ public class AutorizarBeaconActivity extends AppCompatActivity implements Handle
             } catch (IllegalStateException ise) {
                 log(ise.getMessage());
             }
-            if (eventStatus == SpassFingerprint.STATUS_AUTHENTIFICATION_SUCCESS) {
-                log("onFinished() : Identify authentification Success with FingerprintIndex : " + FingerprintIndex);
-            } else if (eventStatus == SpassFingerprint.STATUS_AUTHENTIFICATION_PASSWORD_SUCCESS) {
-                log("onFinished() : Password authentification Success");
+            if (eventStatus == SpassFingerprint.STATUS_AUTHENTIFICATION_SUCCESS || eventStatus == SpassFingerprint.STATUS_AUTHENTIFICATION_PASSWORD_SUCCESS ) {
+                createReport(macAddress, Guardia.darGuardia().getIdGuardia());
             } else if (eventStatus == SpassFingerprint.STATUS_USER_CANCELLED
                     || eventStatus == SpassFingerprint.STATUS_USER_CANCELLED_BY_TOUCH_OUTSIDE) {
                 log("onFinished() : User cancel this identify.");
@@ -183,6 +196,41 @@ public class AutorizarBeaconActivity extends AppCompatActivity implements Handle
             log("the identify is completed");
         }
     };
+
+    private void createReport(String macAddress, int idGuardia)
+    {
+        try{
+            final MediaType JSON
+                    = MediaType.parse("application/json; charset=utf-8");
+            final OkHttpClient client = new OkHttpClient();
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("macAddress", macAddress);
+            jsonObject.put("idGuardia",idGuardia);
+
+            RequestBody body = RequestBody.create(JSON, jsonObject.toString());
+
+            Request request = new Request.Builder()
+                    .url(RestClient.BASE_URL+"/segGuar/"+macAddress+"-"+idGuardia)
+                    .post(body)
+                    .build();
+
+            client.newCall(request).enqueue(new Callback() {
+                @Override public void onFailure(Call call, IOException e) {
+                    e.printStackTrace();
+                }
+
+                @Override public void onResponse(Call call, Response response) throws IOException
+                {
+                    finish();
+                }
+            });
+        }
+        catch(Exception e)
+        {
+
+        }
+
+    }
 
     private void log(String text) {
         final String txt = text;

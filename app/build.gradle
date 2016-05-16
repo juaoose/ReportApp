@@ -35,6 +35,4 @@ dependencies {
     compile 'com.squareup.retrofit2:converter-gson:2.0.1'
     compile 'com.squareup.okhttp3:okhttp:3.2.0'
     compile 'com.estimote:sdk:0.10.3@aar'
-    compile files('/Users/cami/AndroidStudioProjects/ReportApp/libs/pass-v1.2.1.jar')
-    compile files('/Users/cami/AndroidStudioProjects/ReportApp/libs/sdk-v1.0.0.jar')
 }
